@@ -34,22 +34,54 @@ li {
   <ul id="taskList"></ul>
 </div>
 <script>
-    function addTask() {
-  const input = document.getElementById("taskInput");
-  const task = input.value.trim();
+// Load todos on page load
+window.onload = function() {
+    showTodos();
+};
 
-  if (task === "") return;
+// Add Todo
+function addTodo() {
+    let todo = document.getElementById("todoInput").value;
+    if (todo.trim() === "") return;
 
-  const li = document.createElement("li");
-  li.innerHTML = `${task} <button onclick="removeTask(this)">X</button>`;
+    let todos = JSON.parse(localStorage.getItem("todos")) || [];
+    todos.push(todo);
 
-  document.getElementById("taskList").appendChild(li);
-  input.value = "";
+    localStorage.setItem("todos", JSON.stringify(todos));
+    document.getElementById("todoInput").value = "";
+
+    showTodos();
 }
 
-function removeTask(btn) {
-  btn.parentElement.remove();
+// Show Todos
+function showTodos() {
+    let todos = JSON.parse(localStorage.getItem("todos")) || [];
+    let list = document.getElementById("todoList");
+
+    list.innerHTML = "";
+
+    todos.forEach((item, index) => {
+        list.innerHTML += `
+            <li>
+                ${item}
+                <button onclick="deleteTodo(${index})">Delete</button>
+            </li>
+        `;
+    });
 }
+
+// Delete Todo
+function deleteTodo(index) {
+    let todos = JSON.parse(localStorage.getItem("todos")) || [];
+
+    todos.splice(index, 1); // remove 1 item
+
+    localStorage.setItem("todos", JSON.stringify(todos));
+
+    showTodos();
+}
+
 </script>
 </body>
+
 </html>
